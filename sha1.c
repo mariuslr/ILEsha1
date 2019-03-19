@@ -16,6 +16,9 @@ A million repetitions of "a"
 /* #define SHA1HANDSOFF * Copies data before messing with it. */
 
 #define SHA1HANDSOFF
+#define BIG_ENDIAN 1
+#define BYTE_ORDER BIG_ENDIAN
+
 
 #include <stdio.h>
 #include <string.h>

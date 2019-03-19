@@ -4,30 +4,14 @@ SHA1 tests by Philip Woolford <woolford.philip@gmail.com>
  */
 
 #include "sha1.h"
-#include "CUnit/Basic.h"
 #include "stdio.h"
 #include "string.h"
 
 #define SUCCESS 0
 
-/* The suite initialization function.
- * Returns zero on success, non-zero otherwise.
- */
-int init_suite(
-    void
-)
+void CU_ASSERT (int ok) 
 {
-  return 0;
-}
-
-/* The suite cleanup function.
- * Returns zero on success, non-zero otherwise.
- */
-int clean_suite(
-    void
-)
-{
-  return 0;
+    printf ("%s\n" , ok ? "OK":"ERROR");
 }
 
 /* Test Vector 1 */
@@ -35,7 +19,10 @@ void testvec1(
     void
 )
 {
+#pragma convert(1252)
   char const string[] = "abc";
+#pragma convert(0)
+
   char const expect[] = "a9993e364706816aba3e25717850c26c9cd0d89d";
   char result[21];
   char hexresult[41];
@@ -57,7 +44,10 @@ void testvec2(
     void
 )
 {
+#pragma convert(1252)
   char const string[] = "";
+#pragma convert(0)
+
   char const expect[] = "da39a3ee5e6b4b0d3255bfef95601890afd80709";
   char result[21];
   char hexresult[41];
@@ -79,7 +69,10 @@ void testvec3(
     void
 )
 {
+#pragma convert(1252)
   char const string[] = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq";
+#pragma convert(0)
+
   char const expect[] = "84983e441c3bd26ebaae4aa1f95129e5e54670f1";
   char result[21];
   char hexresult[41];
@@ -101,8 +94,10 @@ void testvec4(
     void
 )
 {
+#pragma convert(1252)
   char const string1[] = "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghij";
   char const string2[] = "klmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu";
+#pragma convert(0)
   char const expect[] = "a49b2446a02c645bf419f995b67091253a04a259";
   unsigned char result[21];
   char hexresult[41];
@@ -128,6 +123,7 @@ void testvec5(
     void
 )
 {
+
   char string[1000001];
   char const expect[] = "34aa973cd4c4daa4f61eeb2bdbad27316534016f";
   char result[21];
@@ -136,10 +132,13 @@ void testvec5(
   size_t offset;
 
   /* generate string */
+#pragma convert(1252)
+
   for( iterator = 0; iterator < 1000000; iterator++) {
     string[iterator] = 'a';
   }
   string[1000000] = '\0';
+#pragma convert(0)
 
   /* calculate hash */
   SHA1( result, string, strlen(string) );
@@ -157,7 +156,9 @@ void testvec6(
     void
 )
 {
+#pragma convert(1252)
   char const string[] = "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmno";
+#pragma convert(0)
   char const expect[] = "7789f0c9ef7bfc40d93311143dfbe69e2017f592";
   unsigned char result[21];
   char hexresult[41];
@@ -180,38 +181,12 @@ void testvec6(
   CU_ASSERT( strncmp(hexresult, expect, 40) == SUCCESS );
 }
 
-int main(
-    void
-)
+int main(void)
 {
-  CU_pSuite pSuite = NULL;
-
-  /* initialize the CUnit test registry */
-  if (CUE_SUCCESS != CU_initialize_registry())
-    return CU_get_error();
-
-  /* add a suite to the registry */
-  pSuite = CU_add_suite("http://www.di-mgt.com.au/sha_testvectors.html", init_suite, clean_suite);
-  if (NULL == pSuite) {
-    CU_cleanup_registry();
-    return CU_get_error();
-  }
-
-  /* add the tests to the suite */
-  if ((NULL == CU_add_test(pSuite, "Test of Test Vector 1", testvec1)) ||
-     (NULL == CU_add_test(pSuite, "Test of Test Vector 2", testvec2)) ||
-     (NULL == CU_add_test(pSuite, "Test of Test Vector 3", testvec3)) ||
-     (NULL == CU_add_test(pSuite, "Test of Test Vector 4", testvec4)) ||
-     (NULL == CU_add_test(pSuite, "Test of Test Vector 5", testvec5)) ||
-     (NULL == CU_add_test(pSuite, "Test of Test Vector 6", testvec6)))
-  {
-    CU_cleanup_registry();
-    return CU_get_error();
-  }
-
-  /* Run all tests using the CUnit Basic interface */
-  CU_basic_set_mode(CU_BRM_VERBOSE);
-  CU_basic_run_tests();
-  CU_cleanup_registry();
-  return CU_get_error();
-}
+  testvec1();
+  testvec2();
+  testvec3();
+  testvec4();
+  testvec5();
+  testvec6();
+ }

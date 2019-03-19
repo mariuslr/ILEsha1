@@ -30,9 +30,10 @@ USRINCDIR='/usr/local/include'
 INCLUDE='/QIBM/include' './.' 
 
 # CCFLAGS = C compiler parameter
-CCFLAGS2=OPTION(*STDLOGMSG) OUTPUT(*NONE) OPTIMIZE(10) ENUM(*INT) TERASPACE(*YES) STGMDL(*INHERIT) SYSIFCOPT(*IFSIO) DBGVIEW(*ALL) INCDIR($(INCLUDE)) 
+CCFLAGS2=OPTION(*STDLOGMSG *SHOWINC ) OUTPUT(*NONE) OPTIMIZE(10) ENUM(*INT) TERASPACE(*YES) STGMDL(*INHERIT) SYSIFCOPT(*IFSIO) DBGVIEW(*ALL) INCDIR($(INCLUDE)) 
+CCFLAGS1=OPTION(*STDLOGMSG) OUTPUT(*NONE) OPTIMIZE(10) ENUM(*INT) TERASPACE(*YES) STGMDL(*INHERIT) SYSIFCOPT(*IFSIO) DBGVIEW(*ALL) INCDIR($(INCLUDE)) 
 	
-all: env compile bind
+all: env compile bind test
 
 env:
 	-system -q "CRTLIB $(BIN_LIB) TYPE(*TEST) TEXT('ILEsha1: sha-1 implementation ')"                                          
@@ -54,7 +55,8 @@ clean:
 	-system -q "CLRLIB $(BIN_LIB)"
 
 test: .PHONY
-	cd unittests && make
+	system "CRTCMOD MODULE($(BIN_LIB)/test) SRCSTMF('test.c') $(CCFLAGS2) "
+	system "CRTPGM  PGM($(BIN_LIB)/test) BNDSRVPGM($(BIN_LIB)/ILEsha1)"
 	
 # For vsCode 
 current: env
