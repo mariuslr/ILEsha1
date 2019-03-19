@@ -1,3 +1,7 @@
+This is a modified version of clibs/sha1 for running in IBM i ILE environment
+Niels Liisberg - Sitemule 2019
+
+
 NAME
      SHA1Init, SHA1Update, SHA1Final, SHA1Transform
 
